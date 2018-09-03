@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Trending Probability</title>
+</head>
+<body>
+	<input type="text" placeholder="viewcount: " id='v'>
+	<input type="text" placeholder="hoursago: " id='h'>
+	<input type="text" placeholder="duration: " id='d'>
+	<button onclick="go()">Go!</button>
+	<script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script>
+	<script>
+	// Initialize Firebase
+	var config = {
+		apiKey: "AIzaSyDmJXMpZOA8ZDg9OhSRZv1K-ZYon4gypMo",
+		authDomain: "trending-data.firebaseapp.com",
+		databaseURL: "https://trending-data.firebaseio.com",
+		projectId: "trending-data",
+		storageBucket: "trending-data.appspot.com",
+		messagingSenderId: "600953004306"
+	};
+	firebase.initializeApp(config);
+
+	function go(){
+		firebase.database().ref().on('value', function(snapshot) {
+			var sum = 0;
+			var views = parseInt(document.querySelector("#v").value);
+			var hoursago = parseInt(document.querySelector("#h").value);
+			var duration = parseInt(document.querySelector("#d").value);
+			console.log(snapshot.val());
+			Object.values(snapshot.val()).forEach(function(item,index){
+				sum += Math.cbrt(((views - parseInt(item.views)) ** 2) + ((hoursago - parseInt(item.hoursAgo)) ** 2) + ((duration - parseInt(item.duration)) ** 2));
+			});
+			alert(sum / parseInt(Object.values(snapshot.val()).length));
+		});
+	}
+	</script>
+</body>
+</html>
